@@ -1,0 +1,8 @@
+## Interface: 100002
+## Version: v2024.0
+## Title: NAM
+## Notes: Nameplate Aura Manager
+## Author: rakkarage@gmail.com
+## SavedVariables: NAMDB
+
+Core.lua
