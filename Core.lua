@@ -53,7 +53,7 @@ local function newShouldShowBuff(_, aura, forceAll)
 	if (not aura or not aura.name) then return false end
 	local _, _, classId = UnitClass("player")
 	return aura.nameplateShowAll or forceAll or
-		((aura.nameplateShowPersonal or NAMDB[classId].allowed[aura.spellId] and not NAWDB[classId].blocked[aura.spellId]) and
+		((aura.nameplateShowPersonal or (NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId])) and
 			(aura.sourceUnit == "player" or aura.sourceUnit == "pet" or
 				aura.sourceUnit == "vehicle"))
 end
@@ -90,19 +90,19 @@ SlashCmdList["NAM"] = function(msg)
 		print("NAM: Allow and block lists reset for " .. className .. ".")
 	elseif command == "help" then
 		print("NAM: Commands")
-		print("'/naw allow [spellName]' to toggle an allowed aura.")
-		print("'/naw block [spellName]' to toggle a blocked aura.")
-		print("'/naw list' display class allow and block lists.")
-		print("'/naw reset' reset class allow and block lists to default.")
+		print("'/nam allow [spellName]' to toggle an allowed aura.")
+		print("'/nam block [spellName]' to toggle a blocked aura.")
+		print("'/nam list' display class allow and block lists.")
+		print("'/nam reset' reset class allow and block lists to default.")
 	else
-		print("NAM: Invalid command. Use /naw help")
+		print("NAM: Invalid command. Use /nam help")
 	end
 end
 
-NAW = CreateFrame("Frame")
-NAW:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-NAW:RegisterEvent("ADDON_LOADED")
-NAW:SetScript("OnEvent", function(_, event, arg1)
+NAM = CreateFrame("Frame")
+NAM:RegisterEvent("NAME_PLATE_UNIT_ADDED")
+NAM:RegisterEvent("ADDON_LOADED")
+NAM:SetScript("OnEvent", function(_, event, arg1)
 	if event == "NAME_PLATE_UNIT_ADDED" then
 		Mixin(C_NamePlate.GetNamePlateForUnit(arg1))
 	elseif event == "ADDON_LOADED" and arg1 == "NameplateAuraManager" then
