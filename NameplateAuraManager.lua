@@ -91,10 +91,10 @@ SlashCmdList["NAM"] = function(msg)
 		print("NAM: Allow and block lists reset for " .. className .. ".")
 	elseif command == "help" then
 		print("NAM: Commands")
-		print("'/nam allow [spellName]' to toggle an allowed aura.")
-		print("'/nam block [spellName]' to toggle a blocked aura.")
-		print("'/nam list' display class allow and block lists.")
-		print("'/nam reset' reset class allow and block lists to default.")
+		print("`/nam allow [spellId]` to toggle an allowed aura.")
+		print("`/nam block [spellid]` to toggle a blocked aura.")
+		print("`/nam list` display class allow and block lists.")
+		print("`/nam reset` reset class allow and block lists to default.")
 	else
 		print("NAM: Invalid command. Use /nam help")
 	end
