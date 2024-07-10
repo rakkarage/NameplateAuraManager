@@ -5,4 +5,4 @@
 ## Author: rakkarage@gmail.com
 ## SavedVariables: NAMDB
 
-Core.lua
+NameplateAuraManager.lua
