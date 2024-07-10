@@ -53,7 +53,7 @@ local function newShouldShowBuff(_, aura, forceAll)
 	if (not aura or not aura.name) then return false end
 	local _, _, classId = UnitClass("player")
 	return aura.nameplateShowAll or forceAll or
-		((aura.nameplateShowPersonal or (NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId])) and
+		((NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId]) and
 			(aura.sourceUnit == "player" or aura.sourceUnit == "pet" or
 				aura.sourceUnit == "vehicle"))
 end
@@ -79,11 +79,11 @@ SlashCmdList["NAM"] = function(msg)
 	elseif command == "list" then
 		print("NAM: Allowed spells for " .. className .. "(" .. tostring(classId) .. "):")
 		for i, _ in pairs(NAMDB[classId].allowed) do
-			print(GetSpellInfo(i) .. " (" .. i .. ")")
+			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
 		end
 		print("NAM: Blocked spells for " .. className .. "(" .. tostring(classId) .. "):")
 		for i, _ in pairs(NAMDB[classId].blocked) do
-			print(GetSpellInfo(i) .. " (" .. i .. ")")
+			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
 		end
 	elseif command == "reset" then
 		defaults(classId)
