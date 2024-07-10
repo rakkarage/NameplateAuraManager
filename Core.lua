@@ -61,6 +61,7 @@ end
 local function Mixin(baseFrame)
 	baseFrame.UnitFrame.BuffFrame.ShouldShowBuff = newShouldShowBuff
 end
+
 SLASH_NAM1 = "/nam"
 SlashCmdList["NAM"] = function(msg)
 	local command, spellIdString = strsplit(" ", msg, 2)
