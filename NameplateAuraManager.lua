@@ -21,6 +21,8 @@ local function defaults(classId)
 				[355] = true, -- Taunt
 			}
 		},
+		[2] = {      -- paladin
+		},
 		[3] = {      -- hunter
 			allowed = {
 				[217200] = true, -- Barbed Shot
@@ -34,6 +36,26 @@ local function defaults(classId)
 				[195645] = true -- Wing Clip
 			},
 			blocked = {}
+		},
+		[4] = {  -- rogue
+		},
+		[5] = {  -- priest
+		},
+		[6] = {  -- death knight
+		},
+		[7] = {  -- shaman
+		},
+		[8] = {  -- mage
+		},
+		[9] = {  -- warlock
+		},
+		[10] = { -- monk
+		},
+		[11] = { -- druid
+		},
+		[12] = { -- demon hunter
+		},
+		[13] = { -- evoker
 		}
 	}
 
@@ -45,15 +67,12 @@ local function defaults(classId)
 end
 if not NAMDB then defaults() end
 
-local function ensureClassTableInitialized(classId)
-	NAMDB[classId] = NAMDB[classId] or {}
-end
-
 local function newShouldShowBuff(_, aura, forceAll)
 	if (not aura or not aura.name) then return false end
 	local _, _, classId = UnitClass("player")
+	local hasCustomizations = next(NAMDB[classId].allowed) ~= nil or next(NAMDB[classId].blocked) ~= nil
 	return aura.nameplateShowAll or forceAll or
-		((NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId]) and
+		((not hasCustomizations and aura.nameplateShowPersonal) or (NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId]) and
 			(aura.sourceUnit == "player" or aura.sourceUnit == "pet" or
 				aura.sourceUnit == "vehicle"))
 end
@@ -68,7 +87,6 @@ SlashCmdList["NAM"] = function(msg)
 	local spellId = tonumber(spellIdString)
 	local spellName = GetSpellInfo(spellId)
 	local className, _, classId = UnitClass("player")
-	ensureClassTableInitialized(classId)
 	if command == "allow" and spellName then
 		NAMDB[classId].allowed[spellId] = not NAMDB[classId].allowed[spellId]
 		local status = NAMDB[classId].allowed[spellId] and "added to" or "removed from"
@@ -86,17 +104,22 @@ SlashCmdList["NAM"] = function(msg)
 		for i, _ in pairs(NAMDB[classId].blocked) do
 			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
 		end
+	elseif command == "clear" then
+		NAMDB[classId].allowed = {}
+		NAMDB[classId].blocked = {}
+		print("NAM: Allow and block lists cleared for " .. className .. ".")
 	elseif command == "reset" then
 		defaults(classId)
 		print("NAM: Allow and block lists reset for " .. className .. ".")
-	elseif command == "help" then
-		print("NAM: Commands")
-		print("`/nam allow [spellId]` to toggle an allowed aura.")
-		print("`/nam block [spellid]` to toggle a blocked aura.")
-		print("`/nam list` display class allow and block lists.")
-		print("`/nam reset` reset class allow and block lists to default.")
+	elseif command == "help" or command == "?" then
+		print("NAM: Commands:")
+		print("  `/nam allow [spellId]` to toggle an allowed aura.")
+		print("  `/nam block [spellid]` to toggle a blocked aura.")
+		print("  `/nam list` display class allow and block lists.")
+		print("  `/nam clear` clear class allow and block lists.")
+		print("  `/nam reset` reset class allow and block lists to default.")
 	else
-		print("NAM: Invalid command. Use /nam help")
+		print("NAM: Invalid command. Use `/nam help`.")
 	end
 end
 
@@ -107,7 +130,7 @@ NAM:SetScript("OnEvent", function(_, event, arg1)
 	if event == "NAME_PLATE_UNIT_ADDED" then
 		Mixin(C_NamePlate.GetNamePlateForUnit(arg1))
 	elseif event == "ADDON_LOADED" and arg1 == "NameplateAuraManager" then
-		print("NameplateAuraManager: Loaded")
+		print("NAM: Loaded.")
 	end
 end)
 
