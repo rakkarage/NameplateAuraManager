@@ -1,5 +1,5 @@
 ## Interface: 100002
-## Version: v2024.0
+## Version: v2024.1
 ## Title: NAM
 ## Notes: Nameplate Aura Manager
 ## Author: rakkarage@gmail.com

@@ -17,11 +17,11 @@ local function defaults(classId)
 				[384954] = true, -- Shield Charge
 				[385042] = true -- Gushing Wound
 			},
-			blocked = {
-				[355] = true, -- Taunt
-			}
+			blocked = {}
 		},
-		[2] = {      -- paladin
+        [2] = { -- paladin
+			allowed = {},
+			blocked = {}
 		},
 		[3] = {      -- hunter
 			allowed = {
@@ -37,25 +37,45 @@ local function defaults(classId)
 			},
 			blocked = {}
 		},
-		[4] = {  -- rogue
+		[4] = { -- rogue
+			allowed = {},
+			blocked = {}
 		},
-		[5] = {  -- priest
+		[5] = { -- priest
+			allowed = {},
+			blocked = {}
 		},
-		[6] = {  -- death knight
+		[6] = { -- death knight
+			allowed = {},
+			blocked = {}
 		},
-		[7] = {  -- shaman
+		[7] = { -- shaman
+			allowed = {},
+			blocked = {}
 		},
-		[8] = {  -- mage
+		[8] = { -- mage
+			allowed = {},
+			blocked = {}
 		},
-		[9] = {  -- warlock
+		[9] = { -- warlock
+			allowed = {},
+			blocked = {}
 		},
 		[10] = { -- monk
+			allowed = {},
+			blocked = {}
 		},
 		[11] = { -- druid
+			allowed = {},
+			blocked = {}
 		},
 		[12] = { -- demon hunter
+			allowed = {},
+			blocked = {}
 		},
 		[13] = { -- evoker
+			allowed = {},
+			blocked = {}
 		}
 	}
 
@@ -72,29 +92,43 @@ local function newShouldShowBuff(_, aura, forceAll)
 	local _, _, classId = UnitClass("player")
 	local hasCustomizations = next(NAMDB[classId].allowed) ~= nil or next(NAMDB[classId].blocked) ~= nil
 	return aura.nameplateShowAll or forceAll or
-		((not hasCustomizations and aura.nameplateShowPersonal) or (NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId]) and
-			(aura.sourceUnit == "player" or aura.sourceUnit == "pet" or
-				aura.sourceUnit == "vehicle"))
+		((not hasCustomizations and aura.nameplateShowPersonal) or
+			(NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId]) and
+			(aura.sourceUnit == "player" or aura.sourceUnit == "pet" or aura.sourceUnit == "vehicle"))
 end
 
 local function Mixin(baseFrame)
 	baseFrame.UnitFrame.BuffFrame.ShouldShowBuff = newShouldShowBuff
 end
 
+local function handleSpellCommand(spellIdString, targetList, command, className)
+	if not spellIdString or spellIdString == "" then
+		print("NAM: No spell ID provided.")
+		return
+	end
+	local spellId = tonumber(spellIdString)
+	if not spellId then
+		print("NAM: Invalid spell ID.")
+		return
+	end
+	local spellName = GetSpellInfo(spellId)
+	if not spellName then
+		print("NAM: Spell ID does not exist.")
+		return
+	end
+	targetList[spellId] = not targetList[spellId]
+	local status = targetList[spellId] and "added to" or "removed from"
+	print("NAM: " .. spellName .. " (" .. tostring(spellId) .. ") " .. status .. " " .. className .. " " .. command .. " list.")
+end
+
 SLASH_NAM1 = "/nam"
 SlashCmdList["NAM"] = function(msg)
 	local command, spellIdString = strsplit(" ", msg, 2)
-	local spellId = tonumber(spellIdString)
-	local spellName = GetSpellInfo(spellId)
 	local className, _, classId = UnitClass("player")
-	if command == "allow" and spellName then
-		NAMDB[classId].allowed[spellId] = not NAMDB[classId].allowed[spellId]
-		local status = NAMDB[classId].allowed[spellId] and "added to" or "removed from"
-		print("NAM: " .. spellName .. " (" .. tostring(spellId) .. ") " .. status .. " " .. className .. " allow list.")
-	elseif command == "block" and spellName then
-		NAMDB[classId].blocked[spellId] = not NAMDB[classId].blocked[spellId]
-		local status = NAMDB[classId].blocked[spellId] and "added to" or "removed from"
-		print("NAM: " .. spellName .. " (" .. tostring(spellId) .. ") " .. status .. " " .. className .. " block list.")
+	if command == "allow" then
+		handleSpellCommand(spellIdString, NAMDB[classId].allowed, "allow", className)
+	elseif command == "block" then
+		handleSpellCommand(spellIdString, NAMDB[classId].blocked, "block", className)
 	elseif command == "list" then
 		print("NAM: Allowed spells for " .. className .. "(" .. tostring(classId) .. "):")
 		for i, _ in pairs(NAMDB[classId].allowed) do
