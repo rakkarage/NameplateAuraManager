@@ -125,6 +125,7 @@ end
 SLASH_NAM1 = "/nam"
 SlashCmdList["NAM"] = function(msg)
 	local command, spellIdString = strsplit(" ", msg, 2)
+	command = string.lower(command)
 	local className, _, classId = UnitClass("player")
 	if command == "allow" then
 		handleSpellCommand(spellIdString, NAMDB[classId].allowed, "allow", className)
