@@ -132,21 +132,21 @@ SlashCmdList["NAM"] = function(msg)
 	elseif command == "block" then
 		handleSpellCommand(spellIdString, NAMDB[classId].blocked, "block", className)
 	elseif command == "list" then
-		print("NAM: Allowed spells for " .. className .. "(" .. tostring(classId) .. "):")
+		print("NAM: Allowed spells for " .. className .. " (" .. tostring(classId) .. "):")
 		for i, _ in pairs(NAMDB[classId].allowed) do
 			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
 		end
-		print("NAM: Blocked spells for " .. className .. "(" .. tostring(classId) .. "):")
+		print("NAM: Blocked spells for " .. className .. " (" .. tostring(classId) .. "):")
 		for i, _ in pairs(NAMDB[classId].blocked) do
 			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
 		end
 	elseif command == "clear" then
 		NAMDB[classId].allowed = {}
 		NAMDB[classId].blocked = {}
-		print("NAM: Allow and block lists cleared for " .. className .. ".")
+		print("NAM: Allow and block lists cleared for " .. className ..  " (" .. tostring(classId) .. ").")
 	elseif command == "reset" then
 		defaults(classId)
-		print("NAM: Allow and block lists reset for " .. className .. ".")
+		print("NAM: Allow and block lists reset for " .. className .. " (" .. tostring(classId) .. ").")
 	elseif command == "help" or command == "?" or command == "" then
 		print("NAM: Commands:")
 		print("  `/nam allow [spellId]` to toggle an allowed aura.")
