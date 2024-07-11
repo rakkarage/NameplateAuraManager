@@ -7,5 +7,5 @@
   - split into allow and block lists
   - added config
 - v2024.1
-  - use game defaults (aura.nameplayShowPersonal) when empty or unconfigured class lists
+  - use game defaults (aura.nameplateShowPersonal) when empty or uninitialized class lists
   - added clear
