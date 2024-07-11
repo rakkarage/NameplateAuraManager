@@ -1,6 +1,6 @@
 local function defaults(classId)
 	local defaultConfigurations = {
-		[1] = {      -- warrior
+		[1] = {      -- Warrior
 			allowed = {
 				[388539] = true, -- Rend
 				[275335] = true, -- Punish
@@ -19,11 +19,11 @@ local function defaults(classId)
 			},
 			blocked = {}
 		},
-        [2] = { -- paladin
+		[2] = { -- Paladin
 			allowed = {},
 			blocked = {}
 		},
-		[3] = {      -- hunter
+		[3] = {      -- Hunter
 			allowed = {
 				[217200] = true, -- Barbed Shot
 				[257284] = true, -- Hunter's Mark
@@ -37,43 +37,43 @@ local function defaults(classId)
 			},
 			blocked = {}
 		},
-		[4] = { -- rogue
+		[4] = { -- Rogue
 			allowed = {},
 			blocked = {}
 		},
-		[5] = { -- priest
+		[5] = { -- Priest
 			allowed = {},
 			blocked = {}
 		},
-		[6] = { -- death knight
+		[6] = { -- Death Knight
 			allowed = {},
 			blocked = {}
 		},
-		[7] = { -- shaman
+		[7] = { -- Shaman
 			allowed = {},
 			blocked = {}
 		},
-		[8] = { -- mage
+		[8] = { -- Mage
 			allowed = {},
 			blocked = {}
 		},
-		[9] = { -- warlock
+		[9] = { -- Warlock
 			allowed = {},
 			blocked = {}
 		},
-		[10] = { -- monk
+		[10] = { -- Monk
 			allowed = {},
 			blocked = {}
 		},
-		[11] = { -- druid
+		[11] = { -- Druid
 			allowed = {},
 			blocked = {}
 		},
-		[12] = { -- demon hunter
+		[12] = { -- Demon Hunter
 			allowed = {},
 			blocked = {}
 		},
-		[13] = { -- evoker
+		[13] = { -- Evoker
 			allowed = {},
 			blocked = {}
 		}
@@ -118,7 +118,8 @@ local function handleSpellCommand(spellIdString, targetList, command, className)
 	end
 	targetList[spellId] = not targetList[spellId]
 	local status = targetList[spellId] and "added to" or "removed from"
-	print("NAM: " .. spellName .. " (" .. tostring(spellId) .. ") " .. status .. " " .. className .. " " .. command .. " list.")
+	local text = status .. " " .. className .. " " .. command .. " list."
+	print("NAM: " .. spellName .. " (" .. tostring(spellId) .. ") " .. text)
 end
 
 SLASH_NAM1 = "/nam"
@@ -145,7 +146,7 @@ SlashCmdList["NAM"] = function(msg)
 	elseif command == "reset" then
 		defaults(classId)
 		print("NAM: Allow and block lists reset for " .. className .. ".")
-	elseif command == "help" or command == "?" then
+	elseif command == "help" or command == "?" or command == "" then
 		print("NAM: Commands:")
 		print("  `/nam allow [spellId]` to toggle an allowed aura.")
 		print("  `/nam block [spellid]` to toggle a blocked aura.")
