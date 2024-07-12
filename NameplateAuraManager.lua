@@ -92,8 +92,7 @@ local function newShouldShowBuff(_, aura, forceAll)
 	local _, _, classId = UnitClass("player")
 	local hasCustomizations = next(NAMDB[classId].allowed) ~= nil or next(NAMDB[classId].blocked) ~= nil
 	return aura.nameplateShowAll or forceAll or
-		((not hasCustomizations and aura.nameplateShowPersonal) or
-			(NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId]) and
+		((hasCustomizations and (NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId]) or aura.nameplateShowPersonal) and
 			(aura.sourceUnit == "player" or aura.sourceUnit == "pet" or aura.sourceUnit == "vehicle"))
 end
 
