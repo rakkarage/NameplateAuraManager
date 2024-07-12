@@ -89,10 +89,11 @@ if not NAMDB then defaults() end
 
 local function newShouldShowBuff(_, aura, forceAll)
 	if (not aura or not aura.name) then return false end
-	local _, _, classId = UnitClass("player")
-	local hasCustomizations = next(NAMDB[classId].allowed) ~= nil or next(NAMDB[classId].blocked) ~= nil
+    local _, _, classId = UnitClass("player")
+	local classDB = NAMDB[classId]
+	local hasCustomizations = next(classDB.allowed) ~= nil or next(classDB.blocked) ~= nil
 	return aura.nameplateShowAll or forceAll or
-		((hasCustomizations and (NAMDB[classId].allowed[aura.spellId] and not NAMDB[classId].blocked[aura.spellId]) or aura.nameplateShowPersonal) and
+		((hasCustomizations and (classDB.allowed[aura.spellId] and not classDB.blocked[aura.spellId]) or aura.nameplateShowPersonal) and
 			(aura.sourceUnit == "player" or aura.sourceUnit == "pet" or aura.sourceUnit == "vehicle"))
 end
 
@@ -125,23 +126,24 @@ SLASH_NAM1 = "/nam"
 SlashCmdList["NAM"] = function(msg)
 	local command, spellIdString = strsplit(" ", msg, 2)
 	command = string.lower(command)
-	local className, _, classId = UnitClass("player")
+    local className, _, classId = UnitClass("player")
+	local classDB = NAMDB[classId]
 	if command == "allow" then
-		handleSpellCommand(spellIdString, NAMDB[classId].allowed, "allow", className)
+		handleSpellCommand(spellIdString, classDB.allowed, "allow", className)
 	elseif command == "block" then
-		handleSpellCommand(spellIdString, NAMDB[classId].blocked, "block", className)
+		handleSpellCommand(spellIdString, classDB.blocked, "block", className)
 	elseif command == "list" then
 		print("NAM: Allowed spells for " .. className .. ":")
-		for i, _ in pairs(NAMDB[classId].allowed) do
+		for i, _ in pairs(classDB.allowed) do
 			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
 		end
 		print("NAM: Blocked spells for " .. className .. ":")
-		for i, _ in pairs(NAMDB[classId].blocked) do
+		for i, _ in pairs(classDB.blocked) do
 			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
 		end
 	elseif command == "clear" then
-		NAMDB[classId].allowed = {}
-		NAMDB[classId].blocked = {}
+		classDB.allowed = {}
+		classDB.blocked = {}
 		print("NAM: Allow and block lists cleared for " .. className .. ".")
 	elseif command == "reset" then
 		defaults(classId)
