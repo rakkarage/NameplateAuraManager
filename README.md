@@ -1,8 +1,8 @@
-# Nameplate Aura Manager
+# 📛 Nameplate Aura Manager
 
 ![screenshot1](screenshot1.png)![screenshot2](screenshot2.png)
 
-World of Warcraft addon: Change which auras show on default nameplate.
+World of Warcraft addon: Manages aura visibility on default nameplates.
 
 ## Usage
 

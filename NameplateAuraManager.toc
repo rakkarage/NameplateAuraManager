@@ -1,8 +1,9 @@
 ## Interface: 100002
 ## Version: v2024.1
-## Title: NAM
-## Notes: Nameplate Aura Manager
+## Title: Nameplate Aura Manager
+## Notes: Manages aura visibility on default nameplates.
 ## Author: rakkarage@gmail.com
 ## SavedVariables: NAMDB
+## IconTexture: Interface\AddOns\NameplateAuraManager\icon.png
 
 NameplateAuraManager.lua
