@@ -5,13 +5,14 @@ This World of Warcraft addon manages aura visibility on default player and enemy
 ## Features
 
 - Customizes which auras are visible on player and enemy nameplates.
-- Separate management for buffs (player nameplate) and debuffs (enemy nameplate).
+- Separate management for buffs (player nameplate) and debuffs (enemy nameplate) allowed and blocked.
 - Uses game default settings if no custom lists are provided.
 
 ## Class Defaults
 
-- Currently, only Warriors and Hunters have pre-defined default lists.
-- Other classes will use the game's default settings until customized.
+- Currently, only Warriors and Hunters have pre-defined default debuff lists.
+- Game default settings will be used if buff (player) or debuff (enemy) lists are empty.
+- Feel free to suggest default lists for other classes.
 
 ## Usage
 

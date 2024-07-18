@@ -115,10 +115,11 @@ if not NAMDB then defaults() end
 
 local function shouldShowAura(aura, forceAll, allowedAuras, blockedAuras)
 	local playerAura = aura.sourceUnit == "player" or aura.sourceUnit == "pet" or aura.sourceUnit == "vehicle"
-	if next(allowedAuras) ~= nil or next(blockedAuras) ~= nil then
-		local returnValue = aura.nameplateShowAll or forceAll or
-			((allowedAuras[aura.spellId] and not blockedAuras[aura.spellId]) and playerAura)
-		return returnValue or false
+	if blockedAuras[aura.spellId] then
+		return false
+	end
+	if next(allowedAuras) ~= nil then
+		return allowedAuras[aura.spellId] and playerAura
 	else
 		return aura.nameplateShowAll or forceAll or (aura.nameplateShowPersonal and playerAura)
 	end
@@ -154,7 +155,11 @@ local function handleSpellCommand(spellIdString, targetList, command, className,
 		print("NAM: Spell ID does not exist.")
 		return
 	end
-	targetList[spellId] = not targetList[spellId]
+	if targetList[spellId] ~= nil then
+		targetList[spellId] = nil
+	else
+		targetList[spellId] = true
+	end
 	local status = targetList[spellId] and "added to" or "removed from"
 	local text = status .. " " .. className .. " " .. auraType .. " " .. command .. " list."
 	print("NAM: " .. spellName .. " (" .. tostring(spellId) .. ") " .. text)
