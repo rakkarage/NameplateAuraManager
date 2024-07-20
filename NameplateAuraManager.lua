@@ -1,4 +1,4 @@
-local function defaults(classId)
+local function defaults(classId, resetBuffs, resetDebuffs)
 	local defaultConfigurations = {
 		[1] = { -- Warrior
 			allowedBuffs = {},
@@ -108,7 +108,14 @@ local function defaults(classId)
 	if not NAMDB then NAMDB = defaultConfigurations end
 
 	if classId and defaultConfigurations[classId] then
-		NAMDB[classId] = defaultConfigurations[classId]
+		if resetBuffs then
+			NAMDB[classId].allowedBuffs = defaultConfigurations[classId].allowedBuffs
+			NAMDB[classId].blockedBuffs = defaultConfigurations[classId].blockedBuffs
+		end
+		if resetDebuffs then
+			NAMDB[classId].allowedDebuffs = defaultConfigurations[classId].allowedDebuffs
+			NAMDB[classId].blockedDebuffs = defaultConfigurations[classId].blockedDebuffs
+		end
 	end
 end
 if not NAMDB then defaults() end
@@ -165,6 +172,34 @@ local function handleSpellCommand(spellIdString, targetList, command, className,
 	print("NAM: " .. spellName .. " (" .. tostring(spellId) .. ") " .. text)
 end
 
+local function listBuffs(className, classDB)
+	print("NAM: Allowed buff auras for " .. className .. " player nameplate:")
+	for i, _ in pairs(classDB.allowedBuffs) do
+		print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
+	end
+	print("NAM: Blocked buff auras for " .. className .. " player nameplate:")
+	for i, _ in pairs(classDB.blockedBuffs) do
+		print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
+	end
+	if next(classDB.allowedBuffs) == nil and next(classDB.blockedBuffs) == nil then
+		print("  Empty lists means game defaults are used for " .. className .. " player nameplate.")
+	end
+end
+
+local function listDebuffs(className, classDB)
+	print("NAM: Allowed debuff auras for " .. className .. " enemy nameplates:")
+	for i, _ in pairs(classDB.allowedDebuffs) do
+		print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
+	end
+	print("NAM: Blocked debuff auras for " .. className .. " enemy nameplates:")
+	for i, _ in pairs(classDB.blockedDebuffs) do
+		print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
+	end
+	if next(classDB.allowedDebuffs) == nil and next(classDB.blockedDebuffs) == nil then
+		print("  Empty lists means game defaults are used for " .. className .. " enemy nameplates.")
+	end
+end
+
 SLASH_NAM1 = "/nam"
 SlashCmdList["NAM"] = function(msg)
 	local command, spellIdString = strsplit(" ", msg, 2)
@@ -180,40 +215,52 @@ SlashCmdList["NAM"] = function(msg)
 	elseif command == "blockdebuff" then
 		handleSpellCommand(spellIdString, classDB.blockedDebuffs, "block", className, "debuff")
 	elseif command == "list" then
-		print("NAM: Allowed buff auras for " .. className .. ":")
-		for i, _ in pairs(classDB.allowedBuffs) do
-			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
-		end
-		print("NAM: Blocked buff auras for " .. className .. ":")
-		for i, _ in pairs(classDB.blockedBuffs) do
-			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
-		end
-		print("NAM: Allowed debuff auras for " .. className .. ":")
-		for i, _ in pairs(classDB.allowedDebuffs) do
-			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
-		end
-		print("NAM: Blocked deuff auras for " .. className .. ":")
-		for i, _ in pairs(classDB.blockedDebuffs) do
-			print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
-		end
+		listBuffs(className, classDB)
+		listDebuffs(className, classDB)
+	elseif command == "listbuff" then
+		listBuffs(className, classDB)
+	elseif command == "listdebuff" then
+		listDebuffs(className, classDB)
 	elseif command == "clear" then
 		classDB.allowedBuffs = {}
 		classDB.blockedBuffs = {}
 		classDB.allowedDebuffs = {}
 		classDB.blockedDebuffs = {}
 		print("NAM: Allow and block lists cleared for " .. className .. ".")
+	elseif command == "clearbuff" then
+		classDB.allowedBuffs = {}
+		classDB.blockedBuffs = {}
+		print("NAM: Buff allow and block lists for buffs cleared for " .. className .. ".")
+	elseif command == "cleardebuff" then
+		classDB.allowedDebuffs = {}
+		classDB.blockedDebuffs = {}
+		print("NAM: Buff allow and block lists for debuffs cleared for " .. className .. ".")
 	elseif command == "reset" then
-		defaults(classId)
+		defaults(classId, true, true)
 		print("NAM: Allow and block lists reset for " .. className .. ".")
+	elseif command == "resetbuff" then
+		defaults(classId, true, false)
+		print("NAM: Buff allow and block lists for buffs reset for " .. className .. ".")
+	elseif command == "resetdebuff" then
+		defaults(classId, false, true)
+		print("NAM: Buff allow and block lists for debuffs reset for " .. className .. ".")
 	elseif command == "help" or command == "?" or command == "" then
 		print("NAM: Commands:")
-		print("  `/nam allowbuff [spellId]` to toggle an allowed aura on player nameplate.")
-		print("  `/nam blockbuff [spellid]` to toggle a blocked aura on player nameplate.")
-		print("  `/nam allowdebuff [spellId]` to toggle an allowed debuff on enemy nameplate.")
-		print("  `/nam blockdebuff [spellId]` to toggle a blocked debuff on enemy nameplate.")
 		print("  `/nam list` display class allow and block lists.")
 		print("  `/nam clear` clear class allow and block lists.")
 		print("  `/nam reset` reset class allow and block lists to default.")
+		print("Player Nameplate:")
+		print("  `/nam allowbuff [spellId]` to toggle an allowed aura on player nameplate.")
+		print("  `/nam blockbuff [spellid]` to toggle a blocked aura on player nameplate.")
+		print("  `/nam listbuff` display class allow and block lists for buffs.")
+		print("  `/nam clearbuff` clear class allow and block lists for buffs.")
+		print("  `/nam resetbuff` reset class allow and block lists for buffs to default.")
+		print("Enemy Nameplates:")
+		print("  `/nam allowdebuff [spellId]` to toggle an allowed debuff on enemy nameplates.")
+		print("  `/nam blockdebuff [spellId]` to toggle a blocked debuff on enemy nameplates.")
+		print("  `/nam listdebuff` display class allow and block lists for debuffs.")
+		print("  `/nam cleardebuff` clear class allow and block lists for debuffs.")
+		print("  `/nam resetdebuff` reset class allow and block lists for debuffs to default.")
 	else
 		print("NAM: Invalid command. Use `/nam help`.")
 	end

@@ -16,13 +16,25 @@ This World of Warcraft addon manages aura visibility on default player and enemy
 
 ## Usage
 
-- `/nam allowbuff [spellId]` to toggle an allowed aura on the player nameplate.
-- `/nam blockbuff [spellid]` to toggle a blocked aura on the player nameplate.
+- `/nam list` to display class allow and block, buff and debuff lists.
+- `/nam clear` to clear class allow and block, buff and debuff lists.
+- `/nam reset` to reset class allow and block, buff and debuff lists to default.
+
+### Player Nameplate
+
+- `/nam allowbuff [spellId]` to toggle an allowed buff on the player nameplate.
+- `/nam blockbuff [spellid]` to toggle a blocked buff on the player nameplate.
+- `/nam listbuff` to display class allow and block buff lists.
+- `/nam clearbuff` to clear class allow and block buff lists.
+- `/nam resetbuff` to reset class allow and block buff lists to default.
+
+### Enemy Nameplates
+
 - `/nam allowdebuff [spellId]` to toggle an allowed debuff on the enemy nameplate.
 - `/nam blockdebuff [spellId]` to toggle a blocked debuff on the enemy nameplate.
-- `/nam list` to display class allow and block lists.
-- `/nam clear` to clear class allow and block lists.
-- `/nam reset` to reset class allow and block lists to default.
+- `/nam listdebuff` to display class allow and block debuff lists.
+- `/nam cleardebuff` to clear class allow and block debuff lists.
+- `/nam resetdebuff` to reset class allow and block debuff lists to default.
 
 ## Finding Spell IDs
 
