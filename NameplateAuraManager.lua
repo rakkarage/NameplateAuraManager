@@ -120,7 +120,7 @@ local function defaults(classId, resetBuffs, resetDebuffs)
 end
 if not NAMDB then defaults() end
 
-local function shouldShowAura(aura, forceAll, allowedAuras, blockedAuras)
+local function isAuraDisplayable(aura, forceAll, allowedAuras, blockedAuras)
 	local playerAura = aura.sourceUnit == "player" or aura.sourceUnit == "pet" or aura.sourceUnit == "vehicle"
 	if blockedAuras[aura.spellId] then
 		return false
@@ -132,19 +132,19 @@ local function shouldShowAura(aura, forceAll, allowedAuras, blockedAuras)
 	end
 end
 
-local function newShouldShowBuff(_, aura, forceAll)
+local function determineAuraVisibility(_, aura, forceAll)
 	if not aura or not aura.name then return false end
 	local _, _, classId = UnitClass("player")
 	local classDB = NAMDB[classId]
 	if aura.isHarmful then
-		return shouldShowAura(aura, forceAll, classDB.allowedDebuffs, classDB.blockedDebuffs)
+		return isAuraDisplayable(aura, forceAll, classDB.allowedDebuffs, classDB.blockedDebuffs)
 	else
-		return shouldShowAura(aura, forceAll, classDB.allowedBuffs, classDB.blockedBuffs)
+		return isAuraDisplayable(aura, forceAll, classDB.allowedBuffs, classDB.blockedBuffs)
 	end
 end
 
 local function Mixin(baseFrame)
-	baseFrame.UnitFrame.BuffFrame.ShouldShowBuff = newShouldShowBuff
+	baseFrame.UnitFrame.BuffFrame.ShouldShowBuff = determineAuraVisibility
 end
 
 local function handleSpellCommand(spellIdString, targetList, command, className, auraType)
@@ -167,36 +167,26 @@ local function handleSpellCommand(spellIdString, targetList, command, className,
 	else
 		targetList[spellId] = true
 	end
-	local status = targetList[spellId] and "added to" or "removed from"
-	local text = status .. " " .. className .. " " .. auraType .. " " .. command .. " list."
-	print("NAM: " .. spellName .. " (" .. tostring(spellId) .. ") " .. text)
+	print(string.format("NAM: %s (%d) %s %s %s %s list.", spellName, spellId,
+		targetList[spellId] and "added to" or "removed from", className, auraType, command))
 end
 
-local function listBuffs(className, classDB)
-	print("NAM: Allowed buff auras for " .. className .. " player nameplate:")
-	for i, _ in pairs(classDB.allowedBuffs) do
-		print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
-	end
-	print("NAM: Blocked buff auras for " .. className .. " player nameplate:")
-	for i, _ in pairs(classDB.blockedBuffs) do
-		print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
-	end
-	if next(classDB.allowedBuffs) == nil and next(classDB.blockedBuffs) == nil then
-		print("  Empty lists means game defaults are used for " .. className .. " player nameplate.")
-	end
-end
+function listAuras(className, classDB, auraType, nameplateType)
+	local allowedAuras = classDB["allowed" .. auraType]
+	local blockedAuras = classDB["blocked" .. auraType]
 
-local function listDebuffs(className, classDB)
-	print("NAM: Allowed debuff auras for " .. className .. " enemy nameplates:")
-	for i, _ in pairs(classDB.allowedDebuffs) do
-		print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
+	print(string.format("NAM: Allowed %s for %s %s nameplates:", auraType, className, nameplateType))
+	for i, _ in pairs(allowedAuras) do
+		print(string.format("  %s (%d)", GetSpellInfo(i), i))
 	end
-	print("NAM: Blocked debuff auras for " .. className .. " enemy nameplates:")
-	for i, _ in pairs(classDB.blockedDebuffs) do
-		print("  " .. GetSpellInfo(i) .. " (" .. i .. ")")
+
+	print(string.format("NAM: Blocked %s for %s %s nameplates:", auraType, className, nameplateType))
+	for i, _ in pairs(blockedAuras) do
+		print(string.format("  %s (%d)", GetSpellInfo(i), i))
 	end
-	if next(classDB.allowedDebuffs) == nil and next(classDB.blockedDebuffs) == nil then
-		print("  Empty lists means game defaults are used for " .. className .. " enemy nameplates.")
+
+	if next(allowedAuras) == nil and next(blockedAuras) == nil then
+		print(string.format("  Empty lists means game defaults are used for %s %s nameplates.", className, nameplateType))
 	end
 end
 
@@ -215,12 +205,12 @@ SlashCmdList["NAM"] = function(msg)
 	elseif command == "blockdebuff" then
 		handleSpellCommand(spellIdString, classDB.blockedDebuffs, "block", className, "debuff")
 	elseif command == "list" then
-		listBuffs(className, classDB)
-		listDebuffs(className, classDB)
+		listAuras(className, classDB, "Buffs", "player")
+		listAuras(className, classDB, "Debuffs", "enemy")
 	elseif command == "listbuff" then
-		listBuffs(className, classDB)
+		listAuras(className, classDB, "Buffs", "player")
 	elseif command == "listdebuff" then
-		listDebuffs(className, classDB)
+		listAuras(className, classDB, "Debuffs", "enemy")
 	elseif command == "clear" then
 		classDB.allowedBuffs = {}
 		classDB.blockedBuffs = {}
