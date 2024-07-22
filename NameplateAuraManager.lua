@@ -171,7 +171,7 @@ local function handleSpellCommand(spellIdString, targetList, command, className,
 		targetList[spellId] and "added to" or "removed from", className, auraType, command))
 end
 
-function listAuras(className, classDB, auraType, nameplateType)
+local function listAuras(className, classDB, auraType, nameplateType)
 	local allowedAuras = classDB["allowed" .. auraType]
 	local blockedAuras = classDB["blocked" .. auraType]
 
