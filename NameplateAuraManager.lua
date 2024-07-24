@@ -1,120 +1,120 @@
-local function defaults(classId, resetBuffs, resetDebuffs)
-	local defaultConfigurations = {
-		[1] = { -- Warrior
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {
-				[388539] = true, -- Rend
-				[275335] = true, -- Punish
-				[397364] = true, -- Thunderous Roar
-				[105771] = true, -- Charge
-				[5246] = true, -- Intimidating Shout
-				[1160] = true, -- Demoralizing Shout
-				[132168] = true, -- Shockwave
-				[132169] = true, -- Storm Bolt
-				[355] = true, -- Taunt
-				[1715] = true, -- Hamstring
-				[376080] = true, -- Spear of Bastion
-				[6343] = true, -- Thunder Clap
-				[384954] = true, -- Shield Charge
-				[385042] = true -- Gushing Wound
-			},
-			blockedDebuffs = {}
+local defaultConfigurations = {
+	[1] = { -- Warrior
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {
+			[388539] = true, -- Rend
+			[275335] = true, -- Punish
+			[397364] = true, -- Thunderous Roar
+			[105771] = true, -- Charge
+			[5246] = true, -- Intimidating Shout
+			[1160] = true, -- Demoralizing Shout
+			[132168] = true, -- Shockwave
+			[132169] = true, -- Storm Bolt
+			[355] = true, -- Taunt
+			[1715] = true, -- Hamstring
+			[376080] = true, -- Spear of Bastion
+			[6343] = true, -- Thunder Clap
+			[384954] = true, -- Shield Charge
+			[385042] = true -- Gushing Wound
 		},
-		[2] = { -- Paladin
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
+		blockedDebuffs = {}
+	},
+	[2] = { -- Paladin
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[3] = { -- Hunter
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {
+			[217200] = true, -- Barbed Shot
+			[257284] = true, -- Hunter's Mark
+			[375893] = true, -- Death Chakram
+			[2649] = true, -- Growl
+			[24394] = true, -- Intimidation
+			[117405] = true, -- Binding Shot
+			[135299] = true, -- Tar Trap
+			[3355] = true, -- Freezing Trap
+			[195645] = true -- Wing Clip
 		},
-		[3] = { -- Hunter
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {
-				[217200] = true, -- Barbed Shot
-				[257284] = true, -- Hunter's Mark
-				[375893] = true, -- Death Chakram
-				[2649] = true, -- Growl
-				[24394] = true, -- Intimidation
-				[117405] = true, -- Binding Shot
-				[135299] = true, -- Tar Trap
-				[3355] = true, -- Freezing Trap
-				[195645] = true -- Wing Clip
-			},
-			blockedDebuffs = {}
-		},
-		[4] = { -- Rogue
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		},
-		[5] = { -- Priest
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		},
-		[6] = { -- Death Knight
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		},
-		[7] = { -- Shaman
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		},
-		[8] = { -- Mage
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		},
-		[9] = { -- Warlock
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		},
-		[10] = { -- Monk
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		},
-		[11] = { -- Druid
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		},
-		[12] = { -- Demon Hunter
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		},
-		[13] = { -- Evoker
-			allowedBuffs = {},
-			blockedBuffs = {},
-			allowedDebuffs = {},
-			blockedDebuffs = {}
-		}
+		blockedDebuffs = {}
+	},
+	[4] = { -- Rogue
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[5] = { -- Priest
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[6] = { -- Death Knight
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[7] = { -- Shaman
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[8] = { -- Mage
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[9] = { -- Warlock
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[10] = { -- Monk
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[11] = { -- Druid
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[12] = { -- Demon Hunter
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
+	},
+	[13] = { -- Evoker
+		allowedBuffs = {},
+		blockedBuffs = {},
+		allowedDebuffs = {},
+		blockedDebuffs = {}
 	}
+}
 
-	if not NAMDB then NAMDB = defaultConfigurations end
+local function defaults(classId, resetBuffs, resetDebuffs)
+	if not NAMDB then NAMDB = deepCopy(defaultConfigurations) end
 
 	if classId and defaultConfigurations[classId] then
 		if resetBuffs then
-			NAMDB[classId].allowedBuffs = defaultConfigurations[classId].allowedBuffs
-			NAMDB[classId].blockedBuffs = defaultConfigurations[classId].blockedBuffs
+			NAMDB[classId].allowedBuffs = deepCopy(defaultConfigurations[classId].allowedBuffs)
+			NAMDB[classId].blockedBuffs = deepCopy(defaultConfigurations[classId].blockedBuffs)
 		end
 		if resetDebuffs then
-			NAMDB[classId].allowedDebuffs = defaultConfigurations[classId].allowedDebuffs
-			NAMDB[classId].blockedDebuffs = defaultConfigurations[classId].blockedDebuffs
+			NAMDB[classId].allowedDebuffs = deepCopy(defaultConfigurations[classId].allowedDebuffs)
+			NAMDB[classId].blockedDebuffs = deepCopy(defaultConfigurations[classId].blockedDebuffs)
 		end
 	end
 end
