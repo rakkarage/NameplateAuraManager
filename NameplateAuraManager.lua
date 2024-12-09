@@ -14,7 +14,7 @@ local defaultConfigurations = {
 			[355] = true, -- Taunt
 			[1715] = true, -- Hamstring
 			[376080] = true, -- Spear of Bastion
-			[6343] = true, -- Thunder Clap
+			[435203] = true, -- Thunder Clap
 			[384954] = true, -- Shield Charge
 			[385042] = true -- Gushing Wound
 		},
@@ -157,8 +157,8 @@ local function handleSpellCommand(spellIdString, targetList, command, className,
 		print("NAM: Invalid spell ID.")
 		return
 	end
-	local spellName = GetSpellInfo(spellId)
-	if not spellName then
+	local spellInfo = C_Spell.GetSpellInfo(i)
+	if not spellInfo or not spellInfo.name then
 		print("NAM: Spell ID does not exist.")
 		return
 	end
@@ -177,12 +177,14 @@ local function listAuras(className, classDB, auraType, nameplateType)
 
 	print(string.format("NAM: Allowed %s for %s %s nameplates:", auraType, className, nameplateType))
 	for i, _ in pairs(allowedAuras) do
-		print(string.format("  %s (%d)", GetSpellInfo(i), i))
+		local spellInfo = C_Spell.GetSpellInfo(i)
+		print(string.format("  %s (%d)", spellInfo and spellInfo.name or "Unknown", i))
 	end
 
 	print(string.format("NAM: Blocked %s for %s %s nameplates:", auraType, className, nameplateType))
 	for i, _ in pairs(blockedAuras) do
-		print(string.format("  %s (%d)", GetSpellInfo(i), i))
+		local spellInfo = C_Spell.GetSpellInfo(i)
+		print(string.format("  %s (%d)", spellInfo and spellInfo.name or "Unknown", i))
 	end
 
 	if next(allowedAuras) == nil and next(blockedAuras) == nil then
@@ -236,23 +238,23 @@ SlashCmdList["NAM"] = function(msg)
 		print("NAM: Buff allow and block lists for debuffs reset for " .. className .. ".")
 	elseif command == "help" or command == "?" or command == "" then
 		print("NAM: Commands:")
-		print("  '/nam list' display class allow and block lists.")
-		print("  '/nam clear' clear class allow and block lists.")
-		print("  '/nam reset' reset class allow and block lists to default.")
+		print("  `/nam list` display class allow and block lists.")
+		print("  `/nam clear` clear class allow and block lists.")
+		print("  `/nam reset` reset class allow and block lists to default.")
 		print("Player Nameplate:")
-		print("  '/nam allowbuff [spellId]' to toggle an allowed aura on player nameplate.")
-		print("  '/nam blockbuff [spellid]' to toggle a blocked aura on player nameplate.")
-		print("  '/nam listbuff' display class allow and block lists for buffs.")
-		print("  '/nam clearbuff' clear class allow and block lists for buffs.")
-		print("  '/nam resetbuff' reset class allow and block lists for buffs to default.")
+		print("  `/nam allowbuff [spellId]` to toggle an allowed aura on player nameplate.")
+		print("  `/nam blockbuff [spellid]` to toggle a blocked aura on player nameplate.")
+		print("  `/nam listbuff` display class allow and block lists for buffs.")
+		print("  `/nam clearbuff` clear class allow and block lists for buffs.")
+		print("  `/nam resetbuff` reset class allow and block lists for buffs to default.")
 		print("Enemy Nameplates:")
-		print("  '/nam allowdebuff [spellId]' to toggle an allowed debuff on enemy nameplates.")
-		print("  '/nam blockdebuff [spellId]' to toggle a blocked debuff on enemy nameplates.")
-		print("  '/nam listdebuff' display class allow and block lists for debuffs.")
-		print("  '/nam cleardebuff' clear class allow and block lists for debuffs.")
-		print("  '/nam resetdebuff' reset class allow and block lists for debuffs to default.")
+		print("  `/nam allowdebuff [spellId]` to toggle an allowed debuff on enemy nameplates.")
+		print("  `/nam blockdebuff [spellId]` to toggle a blocked debuff on enemy nameplates.")
+		print("  `/nam listdebuff` display class allow and block lists for debuffs.")
+		print("  `/nam cleardebuff` clear class allow and block lists for debuffs.")
+		print("  `/nam resetdebuff` reset class allow and block lists for debuffs to default.")
 	else
-		print("NAM: Invalid command. Use '/nam help'.")
+		print("NAM: Invalid command. Use `/nam help`.")
 	end
 end
 
