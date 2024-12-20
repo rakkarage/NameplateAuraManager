@@ -157,7 +157,7 @@ local function handleSpellCommand(spellIdString, targetList, command, className,
 		print("NAM: Invalid spell ID.")
 		return
 	end
-	local spellInfo = C_Spell.GetSpellInfo(i)
+	local spellInfo = C_Spell.GetSpellInfo(spellId)
 	if not spellInfo or not spellInfo.name then
 		print("NAM: Spell ID does not exist.")
 		return
@@ -167,7 +167,7 @@ local function handleSpellCommand(spellIdString, targetList, command, className,
 	else
 		targetList[spellId] = true
 	end
-	print(string.format("NAM: %s (%d) %s %s %s %s list.", spellName, spellId,
+	print(string.format("NAM: %s (%d) %s %s %s %s list.", spellInfo.name, spellId,
 		targetList[spellId] and "added to" or "removed from", className, auraType, command))
 end
 

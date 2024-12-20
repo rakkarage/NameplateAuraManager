@@ -1,4 +1,4 @@
-## Interface: 110005
+## Interface: 110007
 ## Version: v2024.4
 ## Title: Nameplate Aura Manager
 ## Notes: Manages aura visibility on default nameplates.
